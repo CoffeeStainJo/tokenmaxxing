@@ -450,12 +450,7 @@ function Gauge({ monthlyPct, idealPct, status }) {
       <text x={tickOut.x} y={tickOut.y - 6} fill="var(--steel)" fontSize="9"
         fontFamily="Chakra Petch" letterSpacing="1.5"
         textAnchor={idealPct > 50 ? "end" : "start"}>IDEAL</text>
-      {/* needle */}
-      <line x1={cx} y1={cy} x2={needle.x} y2={needle.y} stroke="var(--accent)" strokeWidth="2.5"
-        strokeLinecap="round" opacity=".9" />
-      <circle cx={cx} cy={cy} r="7" fill="#0B0F16" stroke="var(--accent)" strokeWidth="2" />
-      <circle cx={cx} cy={cy} r="2.5" fill="var(--accent)" />
-      {/* end-cap dot */}
+      {/* end-cap dot (marks current position on the arc) */}
       <circle cx={needle.x} cy={needle.y} r="5.5" fill="var(--accent)" filter="url(#gBlur)" opacity=".8" />
       <circle cx={needle.x} cy={needle.y} r="3.5" fill="#fff" />
     </svg>
@@ -524,7 +519,7 @@ function BurnChart({ cumulative, today, daysInMonth, projTotal }) {
 /* ============================ STAT CARD ============================ */
 function Stat({ label, value, small, note, tone }) {
   return (
-    <div className="card stat">
+    <div className="card stat col-3">
       <div className="card-label">{label}</div>
       <div className="num">{value}{small && <span className="small"> {small}</span>}</div>
       {note && <div className={"note " + (tone || "")}>{note}</div>}
