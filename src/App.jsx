@@ -612,6 +612,27 @@ function App() {
   // persist (silently no-ops if storage is blocked)
   useEffect(() => { writeStore({ month: cycle.monthKey, entries }); }, [entries, cycle.monthKey]);
 
+  // service worker for offline support and update notifications
+  useEffect(() => {
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('/sw.js')
+        .then(registration => {
+          registration.addEventListener('updatefound', () => {
+            const newWorker = registration.installing;
+            newWorker.addEventListener('statechange', () => {
+              if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                // New content is available, notify user
+                if (confirm('New version available! Would you like to update?')) {
+                  window.location.reload();
+                }
+              }
+            });
+          });
+        })
+        .catch(error => console.log('Service worker registration failed:', error));
+    }
+  }, []);
+
   /* -------- derived metrics (working-day pacing) -------- */
   const totalUsed = useMemo(() => entries.reduce((a, e) => a + e.amount, 0), [entries]);
   const remaining = Math.max(0, BUDGET - totalUsed);
